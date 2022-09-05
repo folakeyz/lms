@@ -17,6 +17,7 @@ const fileupload = require("express-fileupload");
 
 dotenv.config({ path: "./config/config.env" });
 connectDB();
+const admin = require("./routes/admin");
 const user = require("./routes/user");
 const course = require("./routes/course");
 const section = require("./routes/section");
@@ -25,6 +26,7 @@ const result = require("./routes/result");
 const overview = require("./routes/overview");
 const training = require("./routes/training");
 const question = require("./routes/question");
+const category = require("./routes/category");
 
 const app = express();
 if (process.env.NODE_ENV === "development") {
@@ -56,6 +58,8 @@ app.use(hpp());
 app.use(fileupload());
 
 //Mount Routers
+app.use("/api/v1/auth", admin);
+app.use("/api/v1/category", category);
 app.use("/api/v1/user", user);
 app.use("/api/v1/course", course);
 app.use("/api/v1/section", section);

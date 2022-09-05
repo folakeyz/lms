@@ -11,6 +11,31 @@ const crypto = require("crypto");
 // @access   Private/Admin
 exports.createCourse = asyncHandler(async (req, res, next) => {
   const admin = req.user;
+
+  const file = req.files.video;
+  //Make sure the image is a photo
+  if (!file.mimetype.startsWith("video")) {
+    return next(new ErrorResponse(`Please Upload a Video`, 400));
+  }
+
+  // Check filesize
+  if (file.size > process.env.MAX_FILE_UPLOAD) {
+    return next(
+      new ErrorResponse(
+        `Please Upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+        400
+      )
+    );
+  }
+  //crete custom filename
+  file.name = `Video_${admin._id}_${file.name}${path.parse(file.name).ext}`;
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+    if (err) {
+      console.error(err);
+      return next(new ErrorResponse(`An error occured while uploading`, 500));
+    }
+  });
+
   const thumb = req.files.thumbnail;
   //Make sure the image is a photo
   if (!thumb.mimetype.startsWith("image")) {
@@ -36,6 +61,7 @@ exports.createCourse = asyncHandler(async (req, res, next) => {
   });
 
   req.body.thumbnail = thumb.name;
+  req.body.video = file.name;
   const upload = await Course.create(req.body);
   res.status(201).json({
     success: true,
