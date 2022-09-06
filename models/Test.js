@@ -1,29 +1,27 @@
 const mongoose = require("mongoose");
 
 const TestSchema = new mongoose.Schema({
-  question: {
+  name: {
     type: String,
-    required: [true, "Please add Course Name"],
+    required: [true, "Please add Test Name"],
   },
-  course: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Course",
-    required: true,
-  },
-  section: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Section",
-    required: true,
-  },
-  options: [
+  categories: [
     {
-      type: String,
-      required: [true, "Please add Options"],
+      category: {
+        type: mongoose.Schema.ObjectId,
+        ref: "QuestionCategory",
+        required: true,
+      },
+      count: { type: Number },
     },
   ],
-  correctAnswer: {
-    type: String,
-    required: [true, "Please add Correct Answer"],
+  random: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
+  maxQuestion: {
+    type: Number,
   },
   createdAt: {
     type: Date,

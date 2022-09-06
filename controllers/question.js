@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
-const Test = require("../models/Test");
+const Test = require("../models/OldTest");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 

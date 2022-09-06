@@ -1,6 +1,6 @@
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
-const Test = require("../models/Test");
+const Test = require("../models/OldTest");
 
 // @desc    Create User
 // @route   POST/api/v1/User/

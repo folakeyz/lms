@@ -1,6 +1,6 @@
 const express = require("express");
 const { createTest, getTests, getCourseTest } = require("../controllers/test");
-const Test = require("../models/Test");
+const Test = require("../models/OldTest");
 const { protect, authorize } = require("../middleware/auth");
 const advancedResults = require("../middleware/advancedResults");
 

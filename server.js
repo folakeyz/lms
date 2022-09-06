@@ -27,6 +27,7 @@ const overview = require("./routes/overview");
 const training = require("./routes/training");
 const question = require("./routes/question");
 const category = require("./routes/category");
+const questionCat = require("./routes/questionCat");
 
 const app = express();
 if (process.env.NODE_ENV === "development") {
@@ -60,6 +61,7 @@ app.use(fileupload());
 //Mount Routers
 app.use("/api/v1/auth", admin);
 app.use("/api/v1/category", category);
+app.use("/api/v1/qcat", questionCat);
 app.use("/api/v1/user", user);
 app.use("/api/v1/course", course);
 app.use("/api/v1/section", section);
