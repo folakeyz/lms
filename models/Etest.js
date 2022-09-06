@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const TestSchema = new mongoose.Schema({
+const ETestSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please add Test Name"],
@@ -32,4 +32,4 @@ const TestSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Test", TestSchema);
+module.exports = mongoose.model("ETest", ETestSchema);

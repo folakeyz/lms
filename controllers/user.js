@@ -221,3 +221,31 @@ exports.AssignCourse = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+// @desc    Update Employee
+// @route   POST/api/v1/employee/
+// @access   Private/Admin
+exports.AssignTest = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(new ErrorResponse("User not found", 404));
+  }
+  const course = user.assignedTest;
+
+  course.push(req.body.test);
+
+  const updateUser = await User.findByIdAndUpdate(
+    req.params.id,
+    {
+      assignedTest: course,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+  });
+});

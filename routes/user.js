@@ -9,6 +9,7 @@ const {
   updateUser,
   deleteUser,
   AssignCourse,
+  AssignTest,
 } = require("../controllers/user");
 const User = require("../models/User");
 const { protect, authorize } = require("../middleware/auth");
@@ -26,5 +27,6 @@ router
   .put(protect, authorize("Admin"), updateUser)
   .delete(protect, authorize("Admin"), deleteUser);
 router.route("/assign/:id").put(AssignCourse);
+router.route("/assigntest/:id").put(AssignTest);
 
 module.exports = router;

@@ -38,6 +38,12 @@ const UserSchema = new mongoose.Schema({
       ref: "Course",
     },
   ],
+  assignedTest: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "ETest",
+    },
+  ],
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
