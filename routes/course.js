@@ -13,7 +13,20 @@ const router = express.Router();
 router
   .route("/")
   .post(protect, createCourse)
-  .get(protect, advancedResults(Course), getCourses);
+  .get(
+    protect,
+    advancedResults(Course, [
+      {
+        path: "category",
+        select: "name description",
+      },
+      {
+        path: "section",
+        select: "name description video",
+      },
+    ]),
+    getCourses
+  );
 router.route("/:id").get(protect, getSingleCourse);
 
 module.exports = router;

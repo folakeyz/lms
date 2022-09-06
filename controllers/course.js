@@ -54,7 +54,16 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
 // @route   POST/api/v1/employee
 // @access   Private/Admin
 exports.getSingleCourse = asyncHandler(async (req, res, next) => {
-  const section = await Course.findOne({ _id: req.params.id });
+  const section = await Course.findOne({ _id: req.params.id }).populate([
+    {
+      path: "category",
+      select: "name description",
+    },
+    {
+      path: "section",
+      select: "name description video",
+    },
+  ]);
   res.status(200).json({
     success: true,
     data: section,

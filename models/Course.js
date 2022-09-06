@@ -23,11 +23,8 @@ const CourseSchema = new mongoose.Schema({
   },
   section: [
     {
-      section: {
-        type: mongoose.Schema.ObjectId,
-        ref: "Section",
-        // required: true,
-      },
+      type: mongoose.Schema.ObjectId,
+      ref: "Section",
     },
   ],
   status: {

@@ -10,12 +10,22 @@ const SectionSchema = new mongoose.Schema({
     ref: "Course",
     required: true,
   },
-  instruction: {
+  description: {
     type: String,
   },
-  time: {
-    type: String,
-  },
+  video: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Video",
+    },
+  ],
+
+  // instruction: {
+  //   type: String,
+  // },
+  // time: {
+  //   type: String,
+  // },
   createdAt: {
     type: Date,
     default: Date.now,
