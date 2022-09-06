@@ -2,3 +2,5 @@ node_modules/
 config/config.env
 config/conn.env
 config/devops.env
+
+yarn.lock
