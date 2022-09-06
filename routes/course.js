@@ -24,6 +24,10 @@ router
         path: "section",
         select: "name description video",
       },
+      {
+        path: "section.video",
+        select: "name description video",
+      },
     ]),
     getCourses
   );

@@ -63,6 +63,10 @@ exports.getSingleCourse = asyncHandler(async (req, res, next) => {
       path: "section",
       select: "name description video",
     },
+    {
+      path: "section.video",
+      select: "name description video",
+    },
   ]);
   res.status(200).json({
     success: true,

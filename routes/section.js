@@ -3,6 +3,7 @@ const {
   createSection,
   getSections,
   getCourseSection,
+  addCourseSection,
 } = require("../controllers/section");
 const Section = require("../models/Section");
 const { protect, authorize } = require("../middleware/auth");
@@ -14,6 +15,7 @@ router
   .route("/")
   .post(protect, createSection)
   .get(protect, advancedResults(Section), getSections);
-router.route("/:course").get(protect, getCourseSection);
+router.route("/:id").get(protect, getCourseSection);
+router.route("/course/:section").put(protect, addCourseSection);
 
 module.exports = router;
