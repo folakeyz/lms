@@ -44,6 +44,12 @@ const UserSchema = new mongoose.Schema({
       ref: "ETest",
     },
   ],
+  completedTest: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "ETest",
+    },
+  ],
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {

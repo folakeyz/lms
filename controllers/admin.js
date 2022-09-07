@@ -7,6 +7,7 @@ const axios = require("axios");
 
 exports.userRegistration = asyncHandler(async (req, res, next) => {
   const { accessToken } = req.body;
+
   if (!accessToken) {
     return next(new ErrorResponse(`No access token provided`, 400));
   }
@@ -29,7 +30,6 @@ exports.userRegistration = asyncHandler(async (req, res, next) => {
   let { mail, displayName } = data;
   mail = mail.toLowerCase();
   const checkStaff = await User.findOne({ email: mail });
-  console.log(checkStaff);
   if (!checkStaff) {
     const staff = await User.create({
       email: mail,

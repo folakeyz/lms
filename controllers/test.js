@@ -4,6 +4,7 @@ const ETest = require("../models/ETest");
 const Question = require("../models/Question");
 const Grade = require("../models/Grade");
 const Overview = require("../models/Overview");
+const User = require("../models/User");
 
 // @desc    Create User
 // @route   POST/api/v1/User/
@@ -69,6 +70,18 @@ exports.gradeUser = asyncHandler(async (req, res, next) => {
     user: req.user.id,
     test: req.body.test,
   });
+  const completed = await Overview.findOne({
+    user: req.user.id,
+    test: req.body.test,
+  });
+  if (completed) {
+    return next(
+      new ErrorResponse(
+        `Sorry!, You can only attempt this Test Once, Contact your Administrator`,
+        400
+      )
+    );
+  }
   req.body.user = req.user;
   const test = await Question.findById(req.body.question);
 
@@ -80,14 +93,41 @@ exports.gradeUser = asyncHandler(async (req, res, next) => {
   }
   if (exist) {
     const question = exist.question;
-    const update = [
-      {
-        score: score,
-        question: req.body.question,
-        answer: req.body.answer,
-      },
-    ];
-    question.push(...update);
+    const existItem = question.find((x) => x.question == req.body.question);
+
+    const updates = {
+      _id: existItem?._id,
+      score: score,
+      question: req.body.question,
+      answer: req.body.answer,
+    };
+
+    if (existItem) {
+      const newQst = question.map((x) => (x === existItem ? updates : x));
+      await Grade.findByIdAndUpdate(
+        exist._id,
+        {
+          question: newQst,
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+      res.status(200).json({
+        success: true,
+      });
+      return;
+    } else {
+      const update = [
+        {
+          score: score,
+          question: req.body.question,
+          answer: req.body.answer,
+        },
+      ];
+      question.push(...update);
+    }
     await Grade.findByIdAndUpdate(
       exist._id,
       {
@@ -98,6 +138,7 @@ exports.gradeUser = asyncHandler(async (req, res, next) => {
         runValidators: true,
       }
     );
+    console.log(question);
     res.status(200).json({
       success: true,
     });
@@ -130,9 +171,6 @@ exports.getMyResult = asyncHandler(async (req, res, next) => {
   const total = section.question.reduce((a, c) => a + c.score, 0);
   const cal = section.question.length / 100;
   const percentage = total / cal;
-  console.log(total);
-  console.log(cal);
-
   let status = "";
 
   if (percentage >= assignedTest.passMark) {
@@ -143,12 +181,51 @@ exports.getMyResult = asyncHandler(async (req, res, next) => {
   const user = req.user.id;
   const course = req.params.id;
   const score = percentage;
-  await Overview.create({
-    user: user,
-    test: course,
-    score: score,
-    status: status,
-  });
+  const overInfo = await Overview.findOne({ user: req.user.id, test: course });
+  if (overInfo) {
+    await Overview.findByIdAndUpdate(
+      overInfo._id,
+      {
+        user: user,
+        test: course,
+        score: score,
+        status: status,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+  } else {
+    await Overview.create({
+      user: user,
+      test: course,
+      score: score,
+      status: status,
+    });
+  }
+
+  const userInfo = await User.findById(req.user.id);
+  const completedTest = userInfo.completedTest;
+  const existItem = completedTest.find((x) => x == req.params.id);
+
+  if (existItem) {
+    completedTest.map((x) => (x === existItem ? req.params.id : x));
+  } else {
+    completedTest.push(req.params.id);
+  }
+
+  await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      completedTest: completedTest,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
   res.status(200).json({
     success: true,
     data: section,

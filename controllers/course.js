@@ -5,6 +5,7 @@ const asyncHandler = require("../middleware/async");
 const Course = require("../models/Course");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
+const Section = require("../models/Section");
 
 // @desc    Create User
 // @route   POST/api/v1/User/
@@ -64,12 +65,24 @@ exports.getSingleCourse = asyncHandler(async (req, res, next) => {
       select: "name description video",
     },
     {
-      path: "section.video",
+      path: "video",
       select: "name description video",
     },
   ]);
+  const videos = await Section.find({ course: req.params.id }).populate([
+    {
+      path: "section",
+      select: "name description video",
+    },
+    {
+      path: "video",
+      select: "name description video",
+    },
+  ]);
+
   res.status(200).json({
     success: true,
     data: section,
+    videos,
   });
 });
