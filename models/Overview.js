@@ -6,9 +6,9 @@ const OverviewSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  course: {
+  test: {
     type: mongoose.Schema.ObjectId,
-    ref: "Course",
+    ref: "ETest",
     required: true,
   },
   score: {

@@ -69,7 +69,16 @@ exports.logout = asyncHandler(async (req, res, next) => {
 // @access   Private
 
 exports.getMe = asyncHandler(async (req, res, next) => {
-  const staff = await User.findById(req.user.id);
+  const staff = await User.findById(req.user.id).populate([
+    {
+      path: "assignedCourse",
+      select: "name thumbnail author category section status description",
+    },
+    {
+      path: "assignedTest",
+      select: "name maxQuestion passMark",
+    },
+  ]);
   res.status(200).json({
     success: true,
     data: staff,
