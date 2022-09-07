@@ -130,6 +130,9 @@ exports.getMyResult = asyncHandler(async (req, res, next) => {
   const total = section.question.reduce((a, c) => a + c.score, 0);
   const cal = section.question.length / 100;
   const percentage = total / cal;
+  console.log(total);
+  console.log(cal);
+
   let status = "";
 
   if (percentage >= assignedTest.passMark) {
@@ -150,5 +153,6 @@ exports.getMyResult = asyncHandler(async (req, res, next) => {
     success: true,
     data: section,
     percentage,
+    status,
   });
 });
