@@ -8,10 +8,10 @@ const router = express.Router();
 
 router.route("/").get(
   protect,
-  advancedResults(Overview, {
-    path: "user",
-    select: "firstname lastname",
-  }),
+  advancedResults(Overview, [
+    { path: "user", select: "firstname lastname" },
+    { path: "test", select: "name" },
+  ]),
   getOverview
 );
 

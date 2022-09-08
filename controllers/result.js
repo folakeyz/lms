@@ -81,6 +81,7 @@ exports.getMyResult = asyncHandler(async (req, res, next) => {
   const total = section.question.reduce((a, c) => a + c.score, 0);
   const cal = section.question.length / 100;
   const percentage = total / cal;
+
   let status = "";
 
   if (percentage >= 50) {
@@ -94,7 +95,7 @@ exports.getMyResult = asyncHandler(async (req, res, next) => {
   await Overview.create({
     user: user,
     course: course,
-    score: score,
+    score: Matn.round(score),
     status: status,
   });
   res.status(200).json({

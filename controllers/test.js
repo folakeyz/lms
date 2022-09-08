@@ -162,7 +162,10 @@ exports.gradeUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.getMyResult = asyncHandler(async (req, res, next) => {
-  const assignedTest = await ETest.findById(req.params.id);
+  const assignedTest = await ETest.findById(req.params.id).populate({
+    path: "categories..category",
+    select: "name",
+  });
   const section = await Grade.findOne({
     user: req.user.id,
     test: req.params.id,
@@ -173,63 +176,69 @@ exports.getMyResult = asyncHandler(async (req, res, next) => {
   const percentage = total / cal;
   let status = "";
 
-  if (percentage >= assignedTest.passMark) {
-    status = "Pass";
-  } else {
-    status = "Fail";
-  }
-  const user = req.user.id;
-  const course = req.params.id;
-  const score = percentage;
-  const overInfo = await Overview.findOne({ user: req.user.id, test: course });
-  if (overInfo) {
-    await Overview.findByIdAndUpdate(
-      overInfo._id,
-      {
-        user: user,
-        test: course,
-        score: score,
-        status: status,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-  } else {
-    await Overview.create({
-      user: user,
-      test: course,
-      score: score,
-      status: status,
-    });
-  }
+  // for (let i = 0; i < assignedTest?.categories.length; i++) {
+  //   let sections = sections
+  // }
 
-  const userInfo = await User.findById(req.user.id);
-  const completedTest = userInfo.completedTest;
-  const existItem = completedTest.find((x) => x == req.params.id);
+  console.log(assignedTest);
 
-  if (existItem) {
-    completedTest.map((x) => (x === existItem ? req.params.id : x));
-  } else {
-    completedTest.push(req.params.id);
-  }
+  // if (percentage >= assignedTest.passMark) {
+  //   status = "Pass";
+  // } else {
+  //   status = "Fail";
+  // }
+  // const user = req.user.id;
+  // const course = req.params.id;
+  // const score = percentage;
+  // const overInfo = await Overview.findOne({ user: req.user.id, test: course });
+  // if (overInfo) {
+  //   await Overview.findByIdAndUpdate(
+  //     overInfo._id,
+  //     {
+  //       user: user,
+  //       test: course,
+  //       score: score,
+  //       status: status,
+  //     },
+  //     {
+  //       new: true,
+  //       runValidators: true,
+  //     }
+  //   );
+  // } else {
+  //   await Overview.create({
+  //     user: user,
+  //     test: course,
+  //     score: score,
+  //     status: status,
+  //   });
+  // }
 
-  await User.findByIdAndUpdate(
-    req.user.id,
-    {
-      completedTest: completedTest,
-    },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  // const userInfo = await User.findById(req.user.id);
+  // const completedTest = userInfo.completedTest;
+  // const existItem = completedTest.find((x) => x == req.params.id);
 
-  res.status(200).json({
-    success: true,
-    data: section,
-    percentage,
-    status,
-  });
+  // if (existItem) {
+  //   completedTest.map((x) => (x === existItem ? req.params.id : x));
+  // } else {
+  //   completedTest.push(req.params.id);
+  // }
+
+  // await User.findByIdAndUpdate(
+  //   req.user.id,
+  //   {
+  //     completedTest: completedTest,
+  //   },
+  //   {
+  //     new: true,
+  //     runValidators: true,
+  //   }
+  // );
+
+  // res.status(200).json({
+  //   success: true,
+  //   data: section,
+  //   percentage,
+  //   status,
+  // });
 });
