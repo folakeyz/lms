@@ -182,63 +182,63 @@ exports.getMyResult = asyncHandler(async (req, res, next) => {
 
   console.log(assignedTest);
 
-  // if (percentage >= assignedTest.passMark) {
-  //   status = "Pass";
-  // } else {
-  //   status = "Fail";
-  // }
-  // const user = req.user.id;
-  // const course = req.params.id;
-  // const score = percentage;
-  // const overInfo = await Overview.findOne({ user: req.user.id, test: course });
-  // if (overInfo) {
-  //   await Overview.findByIdAndUpdate(
-  //     overInfo._id,
-  //     {
-  //       user: user,
-  //       test: course,
-  //       score: score,
-  //       status: status,
-  //     },
-  //     {
-  //       new: true,
-  //       runValidators: true,
-  //     }
-  //   );
-  // } else {
-  //   await Overview.create({
-  //     user: user,
-  //     test: course,
-  //     score: score,
-  //     status: status,
-  //   });
-  // }
+  if (percentage >= assignedTest.passMark) {
+    status = "Pass";
+  } else {
+    status = "Fail";
+  }
+  const user = req.user.id;
+  const course = req.params.id;
+  const score = percentage;
+  const overInfo = await Overview.findOne({ user: req.user.id, test: course });
+  if (overInfo) {
+    await Overview.findByIdAndUpdate(
+      overInfo._id,
+      {
+        user: user,
+        test: course,
+        score: score,
+        status: status,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+  } else {
+    await Overview.create({
+      user: user,
+      test: course,
+      score: score,
+      status: status,
+    });
+  }
 
-  // const userInfo = await User.findById(req.user.id);
-  // const completedTest = userInfo.completedTest;
-  // const existItem = completedTest.find((x) => x == req.params.id);
+  const userInfo = await User.findById(req.user.id);
+  const completedTest = userInfo.completedTest;
+  const existItem = completedTest.find((x) => x == req.params.id);
 
-  // if (existItem) {
-  //   completedTest.map((x) => (x === existItem ? req.params.id : x));
-  // } else {
-  //   completedTest.push(req.params.id);
-  // }
+  if (existItem) {
+    completedTest.map((x) => (x === existItem ? req.params.id : x));
+  } else {
+    completedTest.push(req.params.id);
+  }
 
-  // await User.findByIdAndUpdate(
-  //   req.user.id,
-  //   {
-  //     completedTest: completedTest,
-  //   },
-  //   {
-  //     new: true,
-  //     runValidators: true,
-  //   }
-  // );
+  await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      completedTest: completedTest,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
-  // res.status(200).json({
-  //   success: true,
-  //   data: section,
-  //   percentage,
-  //   status,
-  // });
+  res.status(200).json({
+    success: true,
+    data: section,
+    percentage,
+    status,
+  });
 });
