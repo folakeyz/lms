@@ -7,7 +7,7 @@ const {
   gradeUser,
   getMyResult,
 } = require("../controllers/test");
-const ETest = require("../models/ETest");
+const ETest = require("../models/Etest");
 const { protect, authorize } = require("../middleware/auth");
 const advancedResults = require("../middleware/advancedResults");
 

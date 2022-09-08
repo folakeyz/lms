@@ -1,6 +1,6 @@
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
-const ETest = require("../models/ETest");
+const ETest = require("../models/Etest");
 const Question = require("../models/Question");
 const Grade = require("../models/Grade");
 const Overview = require("../models/Overview");
