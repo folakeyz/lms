@@ -38,6 +38,7 @@ exports.userRegistration = asyncHandler(async (req, res, next) => {
     });
     sendTokenResponse(staff, 200, res);
   }
+
   sendTokenResponse(checkStaff, 200, res);
   //   if (!checkStaff.fullname) {
   //     checkStaff.fullname = displayName;

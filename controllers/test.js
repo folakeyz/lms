@@ -5,12 +5,17 @@ const Question = require("../models/Question");
 const Grade = require("../models/Grade");
 const Overview = require("../models/Overview");
 const User = require("../models/User");
+const Log = require("../models/Logs");
 
 // @desc    Create User
 // @route   POST/api/v1/User/
 // @access   Private/Admin
 exports.createTest = asyncHandler(async (req, res, next) => {
   const upload = await ETest.create(req.body);
+  await Log.create({
+    user: user,
+    activity: "Created Test",
+  });
   res.status(201).json({
     success: true,
     data: upload,
@@ -58,7 +63,10 @@ exports.getTest = asyncHandler(async (req, res, next) => {
     const randomQuestions = qst.slice(0, section?.categories[i]?.count);
     questions.push(...randomQuestions);
   }
-
+  await Log.create({
+    user: req.user.id,
+    activity: "Started Test",
+  });
   res.status(200).json({
     success: true,
     data: questions,
@@ -162,10 +170,7 @@ exports.gradeUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.getMyResult = asyncHandler(async (req, res, next) => {
-  const assignedTest = await ETest.findById(req.params.id).populate({
-    path: "categories..category",
-    select: "name",
-  });
+  const assignedTest = await ETest.findById(req.params.id);
   const section = await Grade.findOne({
     user: req.user.id,
     test: req.params.id,
@@ -179,8 +184,6 @@ exports.getMyResult = asyncHandler(async (req, res, next) => {
   // for (let i = 0; i < assignedTest?.categories.length; i++) {
   //   let sections = sections
   // }
-
-  console.log(assignedTest);
 
   if (percentage >= assignedTest.passMark) {
     status = "Pass";
@@ -213,6 +216,11 @@ exports.getMyResult = asyncHandler(async (req, res, next) => {
       status: status,
     });
   }
+
+  await Log.create({
+    user: user,
+    activity: "Checked Result",
+  });
 
   const userInfo = await User.findById(req.user.id);
   const completedTest = userInfo.completedTest;

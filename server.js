@@ -28,6 +28,7 @@ const training = require("./routes/training");
 const question = require("./routes/question");
 const category = require("./routes/category");
 const questionCat = require("./routes/questionCat");
+const logs = require("./routes/logs");
 
 const app = express();
 if (process.env.NODE_ENV === "development") {
@@ -70,6 +71,7 @@ app.use("/api/v1/result", result);
 app.use("/api/v1/overview", overview);
 app.use("/api/v1/training", training);
 app.use("/api/v1/question", question);
+app.use("/api/v1/logs", logs);
 
 app.use(errorHandler);
 //Set static folder

@@ -1,12 +1,17 @@
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const QuestionCategory = require("../models/QuestionCat");
+const Log = require("../models/Logs");
 
 // @desc    Create User
 // @route   POST/api/v1/User/
 // @access   Private/Admin
 exports.createQCategory = asyncHandler(async (req, res, next) => {
   const upload = await QuestionCategory.create(req.body);
+  await Log.create({
+    user: req.user.id,
+    activity: "Created Question Category",
+  });
   res.status(201).json({
     success: true,
     data: upload,
@@ -25,6 +30,7 @@ exports.getQCategories = asyncHandler(async (req, res, next) => {
 // @access   Private/Admin
 exports.getQCategory = asyncHandler(async (req, res, next) => {
   const section = await QuestionCategoory.findById(req.params.id);
+
   res.status(200).json({
     success: true,
     data: section,
@@ -43,6 +49,10 @@ exports.updateQCategory = asyncHandler(async (req, res, next) => {
       runValidators: true,
     }
   );
+  await Log.create({
+    user: req.user.id,
+    activity: "Updated Question Category",
+  });
   res.status(200).json({
     success: true,
     data: section,
@@ -55,6 +65,10 @@ exports.updateQCategory = asyncHandler(async (req, res, next) => {
 exports.deleteQCategory = asyncHandler(async (req, res, next) => {
   const section = await QuestionCategory.findById(req.params.id);
   section.remove();
+  await Log.create({
+    user: req.user.id,
+    activity: "Deleted Question Category",
+  });
   res.status(200).json({
     success: true,
     data: {},

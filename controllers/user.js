@@ -1,6 +1,7 @@
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const User = require("../models/User");
+const Log = require("../models/Logs");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
@@ -9,6 +10,10 @@ const crypto = require("crypto");
 // @access   Private/Admin
 exports.createUser = asyncHandler(async (req, res, next) => {
   const staff = await User.create(req.body);
+  await Log.create({
+    user: staff._id,
+    activity: "created an account",
+  });
   res.status(201).json({
     success: true,
     data: staff,
@@ -182,6 +187,10 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
   if (!user) {
     return next(new ErrorResponse("An Error Occured, Try Again", 400));
   }
+  await Log.create({
+    user: user,
+    activity: `was deleted by ${req.user.firstname}`,
+  });
   res.status(200).json({
     success: true,
   });
@@ -198,6 +207,10 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
   if (!user) {
     return next(new ErrorResponse("An Error Occured, Try Again", 400));
   }
+  await Log.create({
+    user: user,
+    activity: "Updated Profile",
+  });
   res.status(200).json({
     success: true,
   });
@@ -225,6 +238,10 @@ exports.AssignCourse = asyncHandler(async (req, res, next) => {
       runValidators: true,
     }
   );
+  await Log.create({
+    user: user,
+    activity: "was Assigned Course",
+  });
 
   res.status(200).json({
     success: true,
@@ -253,6 +270,10 @@ exports.AssignTest = asyncHandler(async (req, res, next) => {
       runValidators: true,
     }
   );
+  await Log.create({
+    user: user,
+    activity: "was Assigned Test",
+  });
 
   res.status(200).json({
     success: true,
