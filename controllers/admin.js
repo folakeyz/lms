@@ -4,6 +4,8 @@ const User = require("../models/User");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const axios = require("axios");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.CLIENT_ID);
 
 exports.userRegistration = asyncHandler(async (req, res, next) => {
   const { accessToken } = req.body;
@@ -51,6 +53,43 @@ exports.userRegistration = asyncHandler(async (req, res, next) => {
   //       data: staff,
   //     });
   //   }
+});
+
+exports.googleAuth = asyncHandler(async (req, res, next) => {
+  const { token } = req.body;
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.CLIENT_ID,
+  });
+  // console.log(token);
+  console.log(ticket);
+  // const { name, email, picture } = ticket.getPayload();
+
+  // if (!token) {
+  //   return next(new ErrorResponse(`No access token provided`, 400));
+  // }
+
+  // const { data } = await axios(config); //get user data from active directory
+  // const checkEmail = data.mail.split("@"); //split the email address
+  // if (
+  //   checkEmail[1] !== "lotusbetaanalytics.com" ||
+  //   !checkEmail.includes("lotusbetaanalytics.com")
+  // ) {
+  //   return next(new ErrorResponse(`Invalid email`, 400));
+  // }
+  // let { mail, displayName } = data;
+  // mail = mail.toLowerCase();
+  // const checkStaff = await User.findOne({ email: mail });
+  // if (!checkStaff) {
+  //   const staff = await User.create({
+  //     email: mail,
+  //     firstname: displayName,
+  //     lastname: displayName,
+  //   });
+  //   sendTokenResponse(staff, 200, res);
+  // }
+
+  //sendTokenResponse(checkStaff, 200, res);
 });
 
 //Get token from model, create cookie and send response
